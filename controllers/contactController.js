@@ -1,11 +1,18 @@
 const asyncHandler = require('express-async-handler')
+Contact = require('../models/contactModel')
 
 const getContacts = asyncHandler(async (req, res) => {
-  res.status(200).json({ message: 'Get all contacts' })
+  const contacts = await Contact.find()
+  res.status(200).json({ contacts })
 })
 
 const getContact = asyncHandler(async (req, res) => {
-  res.status(200).json({ message: `Get contact: ${req.params.id}` })
+  const contact = await Contact.findById(req.params.id)
+  if (!contact) {
+    throw new Error('Contact Not Found')
+    return
+  }
+  res.status(200).json({ contact })
 })
 
 const createContact = asyncHandler(async (req, res) => {
@@ -16,15 +23,34 @@ const createContact = asyncHandler(async (req, res) => {
     throw new Error('All fields are mandatory!') // this error message is not in the json
     //format it is in the html format so to change it we have to create user defined middleware
   }
-  res.status(200).json({ message: 'Create contacts' })
+  const contact = await Contact.create({
+    name,
+    email,
+    phone,
+  })
+  res.status(201).json({ contact })
 })
 
 const updateContact = asyncHandler(async (req, res) => {
-  res.status(200).json({ message: `Update contact: ${req.params.id} ` })
+  const contact = await Contact.findById(req.params.id)
+  if (!contact) {
+    throw new Error('Contact Not Found!')
+  }
+  const updatedContact = await Contact.findByIdAndUpdate(
+    req.params.id,
+    req.body,
+    { new: true }
+  )
+  res.status(200).json(updatedContact)
 })
 
 const deleteContact = asyncHandler(async (req, res) => {
-  res.status(200).json({ message: `Delete contact: ${req.params.id} ` })
+  const contact = await Contact.findById(req.params.id)
+  if (!contact) {
+    throw new Error('Contact Not Found!')
+  }
+  const deletedContact = await Contact.deleteOne({ _id: req.params.id })
+  res.status(200).json({ deletedContact })
 })
 
 module.exports = {
