@@ -16,7 +16,7 @@ const contactSchema = mongoose.Schema(
     },
   },
   {
-    timestamps: true,
+    timestamps: false,
   }
 )
 
