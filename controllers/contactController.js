@@ -11,7 +11,6 @@ const getContact = asyncHandler(async (req, res) => {
   if (!contact) {
     res.status(404)
     throw new Error('Contact Not Found')
-    return
   }
   res.status(200).json({ contact })
 })
@@ -19,7 +18,6 @@ const getContact = asyncHandler(async (req, res) => {
 const createContact = asyncHandler(async (req, res) => {
   console.log(req.body)
   const { name, email, phone } = req.body
-  res.status(400)
   if (!email || !name || !phone) {
     res.status(400)
     throw new Error('All fields are mandatory!') // this error message is not in the json
